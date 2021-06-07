@@ -12,7 +12,7 @@ public class Driver {
         Room freeRoom = new FreeRoom("130", 12.0, RoomType.DOUBLE);
         System.out.println(freeRoom);
 
-        Reservation reservation = new Reservation(customer, room, new Date(), new Date());
+        Reservation reservation = new Reservation(customer, freeRoom, new Date(), new Date());
         System.out.println(reservation);
     }
 }

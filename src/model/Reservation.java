@@ -50,7 +50,7 @@ public class Reservation {
     public String toString() {
         return "Reservation" + "\n" +
                 customer.getFirstName() + " " + customer.getLastName() + "\n" +
-                "Room: " + room.getRoomNumber() + " - " + room.getRoomType() + " bed" + "\n" +
+                "Room: " + room.getRoomNumber() + " - " + room.getRoomTypeToString() + "\n" +
                 "Price: $" + room.getRoomPrice() + " price per night" + "\n" +
                 "CheckIn Date: " + checkInDate + "\n" +
                 "CheckOut Date: " + checkOutDate;

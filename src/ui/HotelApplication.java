@@ -7,37 +7,44 @@ import java.util.Scanner;
 public class HotelApplication {
 
     public static void main(String[] args) {
-        boolean programActive = true;
-        Scanner scanner = new Scanner(System.in);
-        MainMenu.mainMenu();
-        int selection = Integer.parseInt(scanner.nextLine());
-        while (programActive) {
+        onMainMenu();
+    }
+
+    public static void onMainMenu () {
+        boolean onMainMenu = true;
+        int selection = 0;
+        Scanner mainMenuScanner = new Scanner(System.in);
+        while (onMainMenu) {
+            MainMenu.mainMenu();
+            selection = Integer.parseInt(mainMenuScanner.nextLine());
             try {
                 switch (selection) {
                     case 1:
+                        onMainMenu = false;
                     case 2:
+                        onMainMenu = false;
                     case 3:
+                        onMainMenu = false;
                         MainMenu.createAnAccount();
-                        MainMenu.mainMenu();
                         break;
                     case 4:
+                        onMainMenu = false;
                         AdminMenu.adminMenu();
                         break;
                     case 5:
                         System.out.println("\nThank you for using our booking service, see you next time!");
-                        programActive = false;
+                        onMainMenu = false;
                         break;
                     default:
                         System.out.println("\nError: option not existed, please enter a valid number\n");
-                        MainMenu.mainMenu();
                         break;
                 }
             } catch (Exception ex) {
                 System.out.println("\nError: invalid input\n");
-                MainMenu.mainMenu();
-            } finally {
-                scanner.close();
+                System.out.println(ex.getLocalizedMessage());
+                System.out.println(ex);
             }
         }
+        mainMenuScanner.close();
     }
 }

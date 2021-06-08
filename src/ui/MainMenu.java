@@ -25,27 +25,62 @@ public class MainMenu {
     }
 
     public static void createAnAccount () {
-        Scanner scanner = new Scanner(System.in);
-
-        try {
+        boolean validEmail = false;
+        boolean validFirstName = false;
+        boolean validLastName = false;
+        String email = "";
+        String firstName = "";
+        String lastName = "";
+        Scanner m3Scanner = new Scanner(System.in);
+        while (!validEmail) {
             System.out.println("Enter Email format: name@domain.com");
-            String email = scanner.nextLine();
-            String emailRegex = "^(.+)@(.+).(.+)$";
-            Pattern pattern = Pattern.compile(emailRegex);
-            if (!pattern.matcher(email).matches()) {
-                throw new IllegalArgumentException("Error, invalid email");
+            email = m3Scanner.nextLine();
+            try {
+                String emailRegex = "^(.+)@(.+).(.+)$";
+                Pattern pattern = Pattern.compile(emailRegex);
+                if (!pattern.matcher(email).matches()) {
+                    System.out.println("Error, invalid email, please try again\n");
+                } else {
+                    validEmail = true;
+                }
+            } catch (Exception ex) {
+                ex.getLocalizedMessage();
             }
-            System.out.println("First Name: ");
-            String firstName = scanner.nextLine();
-            System.out.println("Last Name: ");
-            String lastName = scanner.nextLine();
-            HotelResource.createACustomer(email, firstName, lastName);
-            System.out.println("New account has been created: ");
-            System.out.println(HotelResource.getCustomer(email));
-        } catch (Exception ex) {
-            ex.getLocalizedMessage();
-        } finally {
-            scanner.close();
         }
+        while (!validFirstName) {
+            System.out.println("First Name: ");
+            firstName = m3Scanner.nextLine();
+            try {
+                String firstNameRegex = "^[a-zA-Z ,.'-]+$";
+                Pattern pattern = Pattern.compile(firstNameRegex);
+                if (!pattern.matcher(firstName).matches()) {
+                    System.out.println("Error, invalid first name, please try again\n");
+                } else {
+                    validFirstName = true;
+                }
+            } catch (Exception ex) {
+                ex.getLocalizedMessage();
+            }
+        }
+        while (!validLastName) {
+            System.out.println("Last Name: ");
+            lastName = m3Scanner.nextLine();
+            try {
+                String lastNameRegex = "^[a-zA-Z,.'-]+$";
+                Pattern pattern = Pattern.compile(lastNameRegex);
+                if (!pattern.matcher(lastName).matches()) {
+                    System.out.println("Error, invalid last name, please try again\n");
+                } else {
+                    validLastName = true;
+                }
+            } catch (Exception ex) {
+                ex.getLocalizedMessage();
+            }
+        }
+        m3Scanner.close();
+        HotelResource.createACustomer(email, firstName, lastName);
+        System.out.println("\nNew account has been created: ");
+        System.out.println(HotelResource.getCustomer(email) + "\n");
+        HotelApplication.onMainMenu();
     }
 }

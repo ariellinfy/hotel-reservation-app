@@ -2,18 +2,25 @@ package model;
 import java.util.regex.Pattern;
 
 public class Customer {
+    private String email;
     private String firstName;
     private String lastName;
-    private String email;
     private final String emailRegex = "^(.+)@(.+).(.+)$";
     private final Pattern pattern = Pattern.compile(emailRegex);
 
-    public Customer (String firstName, String lastName, String email) {
+    public Customer (String email, String firstName, String lastName) {
         if (!pattern.matcher(email).matches()) {
             throw new IllegalArgumentException("Error, invalid email");
         }
+        this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
         this.email = email;
     }
 
@@ -29,17 +36,7 @@ public class Customer {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public void setLastName(String lastName) { this.lastName = lastName; }
 
     @Override
     public String toString() {

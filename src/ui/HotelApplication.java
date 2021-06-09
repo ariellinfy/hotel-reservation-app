@@ -1,22 +1,21 @@
 package ui;
-
-import api.HotelResource;
-
 import java.util.Scanner;
 
 public class HotelApplication {
+    Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        onMainMenu();
+        MainMenu mainMenu = new MainMenu();
+        AdminMenu adminMenu = new AdminMenu();
+        HotelApplication hotelApplication = new HotelApplication();
+        hotelApplication.onMainMenu(mainMenu, adminMenu);
     }
 
-    public static void onMainMenu () {
+    public void onMainMenu (MainMenu mainMenu, AdminMenu adminMenu) {
         boolean onMainMenu = true;
-        int selection = 0;
-        Scanner mainMenuScanner = new Scanner(System.in);
         while (onMainMenu) {
-            MainMenu.mainMenu();
-            selection = Integer.parseInt(mainMenuScanner.nextLine());
+            mainMenu.mainMenu();
+            int selection = scanner.nextInt();
             try {
                 switch (selection) {
                     case 1:
@@ -24,12 +23,11 @@ public class HotelApplication {
                     case 2:
                         onMainMenu = false;
                     case 3:
-                        onMainMenu = false;
-                        MainMenu.createAnAccount();
+                        mainMenu.createAnAccount(scanner);
                         break;
                     case 4:
                         onMainMenu = false;
-                        AdminMenu.adminMenu();
+                        adminMenu.adminMenu();
                         break;
                     case 5:
                         System.out.println("\nThank you for using our booking service, see you next time!");
@@ -45,6 +43,6 @@ public class HotelApplication {
                 System.out.println(ex);
             }
         }
-        mainMenuScanner.close();
+        scanner.close();
     }
 }

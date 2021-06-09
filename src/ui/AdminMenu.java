@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AdminMenu {
-    public static void adminMenu () {
+    public void adminMenu () {
         List<String> adminMenuList = new ArrayList<String>();
         adminMenuList.add("Admin Menu");
         adminMenuList.add("1. See all Customers");

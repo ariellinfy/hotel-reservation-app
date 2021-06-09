@@ -8,14 +8,28 @@ import java.util.*;
 
 public class ReservationService {
 
-    private static Map<String, IRoom> roomList = new HashMap<String, IRoom>();
-    private static Set<Reservation> reservationList = new HashSet<Reservation>();
+    private static ReservationService reservationService = null;
 
-    public static void addRoom (IRoom room) {
+    private Map<String, IRoom> roomList;
+    private Set<Reservation> reservationList;
+
+    private ReservationService () {
+        roomList = new HashMap<String, IRoom>();
+        reservationList = new HashSet<Reservation>();
+    }
+
+    public static ReservationService getInstance() {
+        if (reservationService == null) {
+            reservationService = new ReservationService();
+        }
+        return reservationService;
+    }
+
+    public void addRoom (IRoom room) {
         roomList.put(room.getRoomNumber(), room);
     }
 
-    public static Collection<IRoom> findRooms (Date checkInDate, Date checkOutDate) {
+    public Collection<IRoom> findRooms (Date checkInDate, Date checkOutDate) {
         List<String> bookedRoomNumbers = new ArrayList<String>();
         List<IRoom> availableRooms = new ArrayList<IRoom>();
 
@@ -32,17 +46,17 @@ public class ReservationService {
         return availableRooms;
     }
 
-    public static IRoom getARoom (String roomId) {
+    public IRoom getARoom (String roomId) {
         return roomList.get(roomId);
     }
 
-    public static Reservation reserveARoom (Customer customer, IRoom room, Date checkInDate, Date checkOutDate) {
+    public Reservation reserveARoom (Customer customer, IRoom room, Date checkInDate, Date checkOutDate) {
         Reservation newReservation = new Reservation(customer, room, checkInDate, checkOutDate);
         reservationList.add(newReservation);
         return newReservation;
     }
 
-    public static Collection<Reservation> getCustomerReservations (Customer customer) {
+    public Collection<Reservation> getCustomerReservations (Customer customer) {
         List<Reservation> customerReservations = new ArrayList<Reservation>();
 
         for (Reservation reservation : reservationList) {
@@ -53,11 +67,11 @@ public class ReservationService {
         return customerReservations;
     }
 
-    public static Collection<IRoom> getAllRooms () {
+    public Collection<IRoom> getAllRooms () {
         return roomList.values();
     }
 
-    public static void printAllReservation () {
+    public void printAllReservation () {
         for (Reservation reservation : reservationList) {
             System.out.println(reservation);
         }

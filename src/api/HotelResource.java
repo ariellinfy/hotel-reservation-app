@@ -10,30 +10,32 @@ import java.util.Collection;
 import java.util.Date;
 
 public class HotelResource {
+    CustomerService customerService = CustomerService.getInstance();
+    ReservationService reservationService = ReservationService.getInstance();
 
-    public static Collection<IRoom> findARoom (Date checkIn, Date checkOut) {
-        return ReservationService.findRooms(checkIn, checkOut);
+    public Collection<IRoom> findARoom (Date checkIn, Date checkOut) {
+        return reservationService.findRooms(checkIn, checkOut);
     }
 
-    public static Customer getCustomer (String email) {
-        return CustomerService.getCustomer(email);
+    public Customer getCustomer (String email) {
+        return customerService.getCustomer(email);
     }
 
-    public static void createACustomer (String email, String firstName, String lastName) {
-        CustomerService.addCustomer(email, firstName, lastName);
+    public void createACustomer (String email, String firstName, String lastName) {
+        customerService.addCustomer(email, firstName, lastName);
     }
 
-    public static IRoom getRoom (String roomNumber) {
-        return ReservationService.getARoom(roomNumber);
+    public IRoom getRoom (String roomNumber) {
+        return reservationService.getARoom(roomNumber);
     }
 
-    public static Reservation bookARoom (String customerEmail, IRoom room, Date checkInDate, Date checkOutDate) {
+    public Reservation bookARoom (String customerEmail, IRoom room, Date checkInDate, Date checkOutDate) {
         Customer customer = getCustomer(customerEmail);
-        return ReservationService.reserveARoom(customer, room, checkInDate, checkOutDate);
+        return reservationService.reserveARoom(customer, room, checkInDate, checkOutDate);
     }
 
-    public static Collection<Reservation> getCustomerReservations (String customerEmail) {
+    public Collection<Reservation> getCustomerReservations (String customerEmail) {
         Customer customer = getCustomer(customerEmail);
-        return ReservationService.getCustomerReservations(customer);
+        return reservationService.getCustomerReservations(customer);
     }
 }

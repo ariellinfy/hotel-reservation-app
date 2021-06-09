@@ -7,19 +7,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CustomerService {
+    private static CustomerService customerService = null;
 
-    private static Map<String, Customer> customerList = new HashMap<String, Customer>();
+    private Map<String, Customer> customerList;
 
-    public static void addCustomer (String email, String firstName, String lastName) {
+    private CustomerService () {
+        customerList = new HashMap<String, Customer>();
+    }
+
+    public static CustomerService getInstance() {
+        if (customerService == null) {
+            customerService = new CustomerService();
+        }
+        return customerService;
+    }
+
+    public void addCustomer (String email, String firstName, String lastName) {
         Customer customer = new Customer(email, firstName, lastName);
         customerList.put(email, customer);
     }
 
-    public static Customer getCustomer (String customerEmail) {
+    public Customer getCustomer (String customerEmail) {
         return customerList.get(customerEmail);
     }
 
-    public static Collection<Customer> getAllCustomers () {
+    public Collection<Customer> getAllCustomers () {
         return customerList.values();
     }
 }

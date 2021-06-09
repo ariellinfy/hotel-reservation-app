@@ -19,14 +19,15 @@ public class HotelApplication {
             try {
                 switch (selection) {
                     case 1:
-                        onMainMenu = false;
+                        mainMenu.findAndReserveARoom();
+                        break;
                     case 2:
-                        onMainMenu = false;
+                        mainMenu.seeMyReservation();
+                        break;
                     case 3:
                         mainMenu.createAnAccount();
                         break;
                     case 4:
-                        onMainMenu = false;
                         adminMenu.adminMenu();
                         break;
                     case 5:

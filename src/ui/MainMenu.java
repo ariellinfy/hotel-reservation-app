@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 public class MainMenu {
     HotelResource hotelResource = new HotelResource();
+    Scanner scanner = HotelApplication.scanner;
 
     public void mainMenu () {
         List<String> mainMenuList = new ArrayList<String>();
@@ -25,8 +26,13 @@ public class MainMenu {
         }
     }
 
+    public void findAndReserveARoom () {
+    }
+
+    public void seeMyReservation () {
+    }
+
     public void createAnAccount () {
-        Scanner scanner = HotelApplication.scanner;
         boolean validInput = false;
         int i = 1;
         String email = "";

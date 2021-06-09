@@ -12,7 +12,7 @@ public class CustomerService {
     private Map<String, Customer> customerList;
 
     private CustomerService () {
-        customerList = new HashMap<String, Customer>();
+        customerList = new HashMap<>();
     }
 
     public static CustomerService getInstance() {

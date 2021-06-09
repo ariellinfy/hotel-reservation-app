@@ -14,8 +14,8 @@ public class ReservationService {
     private Set<Reservation> reservationList;
 
     private ReservationService () {
-        roomList = new HashMap<String, IRoom>();
-        reservationList = new HashSet<Reservation>();
+        roomList = new HashMap<>();
+        reservationList = new HashSet<>();
     }
 
     public static ReservationService getInstance() {
@@ -30,8 +30,8 @@ public class ReservationService {
     }
 
     public Collection<IRoom> findRooms (Date checkInDate, Date checkOutDate) {
-        List<String> bookedRoomNumbers = new ArrayList<String>();
-        List<IRoom> availableRooms = new ArrayList<IRoom>();
+        List<String> bookedRoomNumbers = new ArrayList<>();
+        List<IRoom> availableRooms = new ArrayList<>();
 
         for (Reservation reservation : reservationList) {
             if (reservation.getCheckInDate().compareTo(checkInDate) >= 0 && reservation.getCheckOutDate().compareTo(checkOutDate) <= 0) {
@@ -57,7 +57,7 @@ public class ReservationService {
     }
 
     public Collection<Reservation> getCustomerReservations (Customer customer) {
-        List<Reservation> customerReservations = new ArrayList<Reservation>();
+        List<Reservation> customerReservations = new ArrayList<>();
 
         for (Reservation reservation : reservationList) {
             if (reservation.getCustomer().equals(customer)) {
@@ -73,7 +73,7 @@ public class ReservationService {
 
     public void printAllReservation () {
         for (Reservation reservation : reservationList) {
-            System.out.println(reservation);
+            System.out.println(reservation + "\n");
         }
     }
 }

@@ -12,6 +12,7 @@ public class Room implements IRoom {
         this.roomNumber = roomNumber;
         this.price = price;
         this.enumeration = enumeration;
+
         if (enumeration == RoomType.SINGLE) {
             this.roomType = "Single Bed";
         } else if (enumeration == RoomType.DOUBLE) {

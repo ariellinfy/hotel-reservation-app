@@ -1,11 +1,14 @@
 package model;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class Reservation {
     private Customer customer;
     private IRoom room;
     private Date checkInDate;
     private Date checkOutDate;
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM dd, yyyy", Locale.US);
 
     public Reservation (Customer customer, IRoom room, Date checkInDate, Date checkOutDate) {
         this.customer = customer;
@@ -52,7 +55,7 @@ public class Reservation {
                 customer.getFirstName() + " " + customer.getLastName() + "\n" +
                 "Room: " + room.getRoomNumber() + " - " + room.getRoomTypeToString() + "\n" +
                 "Price: $" + room.getRoomPrice() + " price per night" + "\n" +
-                "CheckIn Date: " + checkInDate + "\n" +
-                "CheckOut Date: " + checkOutDate;
+                "CheckIn Date: " + dateFormat.format(checkInDate) + "\n" +
+                "CheckOut Date: " + dateFormat.format(checkOutDate);
     }
 }

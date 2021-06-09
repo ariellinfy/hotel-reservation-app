@@ -11,8 +11,8 @@ public class AdminMenu {
     Scanner scanner = HotelApplication.scanner;
 
     public void adminMenu () {
-        List<String> adminMenuList = new ArrayList<String>();
-        adminMenuList.add("Admin Menu");
+        List<String> adminMenuList = new ArrayList<>();
+        adminMenuList.add("\nAdmin Menu");
         adminMenuList.add("1. See all Customers");
         adminMenuList.add("2. See all Rooms");
         adminMenuList.add("3. See all Reservations");
@@ -58,7 +58,6 @@ public class AdminMenu {
             } catch (Exception ex) {
                 System.out.println("\nError: invalid input\n");
                 System.out.println(ex.getLocalizedMessage());
-                System.out.println(ex);
             }
         }
     }
@@ -128,9 +127,9 @@ public class AdminMenu {
                             if (!pattern.matcher(roomTypeInput).matches()) {
                                 System.out.println("Error, invalid room type, please try again\n");
                             } else {
-                                if (roomTypeInput == "1") {
+                                if (roomTypeInput.equals("1")) {
                                     roomType = RoomType.SINGLE;
-                                } else if (roomTypeInput == "2") {
+                                } else if (roomTypeInput.equals("2")) {
                                     roomType = RoomType.DOUBLE;
                                 }
                                 IRoom newRoom;
@@ -139,7 +138,7 @@ public class AdminMenu {
                                 } else {
                                     newRoom = new Room(roomNumber, price, roomType);
                                 }
-                                List<IRoom> roomsToAdd = new ArrayList<IRoom>();
+                                List<IRoom> roomsToAdd = new ArrayList<>();
                                 roomsToAdd.add(newRoom);
                                 adminResource.addRoom(roomsToAdd);
                                 i++;
@@ -154,9 +153,9 @@ public class AdminMenu {
                             if (!pattern.matcher(confirmation).matches()) {
                                 System.out.println("Please enter Y (Yes) or N (No)\n");
                             } else {
-                                if (confirmation == "y") {
+                                if (confirmation.equals("y")) {
                                     i = 1;
-                                } else if (confirmation == "n") {
+                                } else if (confirmation.equals("n")) {
                                     backToAdminMenu = true;
                                 }
                             }
@@ -172,5 +171,32 @@ public class AdminMenu {
     }
 
     public void addTestData () {
+        Random randGenerator = new Random();
+        double[] priceList = {0.0, 100.0, 120.0, 125.0, 135.0, 145.0, 150.0, 175.0, 200.0, 250.0};
+        List<IRoom> roomsToAdd = new ArrayList<>();
+        String roomNumber;
+        Double price;
+        RoomType roomType;
+
+        for (int i = 0; i < 10; i++) {
+            IRoom newRoom;
+            int randomPrice = randGenerator.nextInt(priceList.length);
+            float randomType = randGenerator.nextFloat();
+            roomNumber = "10" + i;
+            price = priceList[randomPrice];
+            if (randomType <= 0.5) {
+                roomType = RoomType.SINGLE;
+            } else {
+                roomType = RoomType.DOUBLE;
+            }
+
+            if (price == 0.0) {
+                newRoom = new FreeRoom(roomNumber, price, roomType);
+            } else {
+                newRoom = new Room(roomNumber, price, roomType);
+            }
+            roomsToAdd.add(newRoom);
+        }
+        adminResource.addRoom(roomsToAdd);
     }
 }

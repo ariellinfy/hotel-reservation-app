@@ -5,10 +5,11 @@ public class Customer {
     private String email;
     private String firstName;
     private String lastName;
-    private final String emailRegex = "^(.+)@(.+).(.+)$";
-    private final Pattern pattern = Pattern.compile(emailRegex);
 
     public Customer (String email, String firstName, String lastName) {
+        String emailRegex = "^(.+)@(.+).(.+)$";
+        Pattern pattern = Pattern.compile(emailRegex);
+
         if (!pattern.matcher(email).matches()) {
             throw new IllegalArgumentException("Error, invalid email");
         }

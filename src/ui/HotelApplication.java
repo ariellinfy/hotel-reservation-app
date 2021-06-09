@@ -2,7 +2,7 @@ package ui;
 import java.util.Scanner;
 
 public class HotelApplication {
-    Scanner scanner = new Scanner(System.in);
+    public static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
         MainMenu mainMenu = new MainMenu();
@@ -15,7 +15,7 @@ public class HotelApplication {
         boolean onMainMenu = true;
         while (onMainMenu) {
             mainMenu.mainMenu();
-            int selection = scanner.nextInt();
+            int selection = Integer.parseInt(scanner.nextLine());
             try {
                 switch (selection) {
                     case 1:
@@ -23,7 +23,7 @@ public class HotelApplication {
                     case 2:
                         onMainMenu = false;
                     case 3:
-                        mainMenu.createAnAccount(scanner);
+                        mainMenu.createAnAccount();
                         break;
                     case 4:
                         onMainMenu = false;

@@ -25,53 +25,58 @@ public class MainMenu {
         }
     }
 
-    public void createAnAccount (Scanner scanner) {
-        boolean validEmail = false;
-        boolean validFirstName = false;
-        boolean validLastName = false;
+    public void createAnAccount () {
+        Scanner scanner = HotelApplication.scanner;
+        boolean validInput = false;
+        int i = 1;
         String email = "";
+        String emailRegex = "^(.+)@(.+).(.+)$";
         String firstName = "";
+        String firstNameRegex = "^[a-zA-Z ,.'-]+$";
         String lastName = "";
-        while (!validEmail) {
-            System.out.println("Enter Email format: name@domain.com");
+        String lastNameRegex = "^[a-zA-Z,.'-]+$";
+        Pattern pattern;
+        while (!validInput) {
             try {
-                String emailRegex = "^(.+)@(.+).(.+)$";
-                Pattern pattern = Pattern.compile(emailRegex);
-                email = scanner.nextLine();
-                if (!pattern.matcher(email).matches()) {
-                    System.out.println("Error, invalid email, please try again\n");
-                } else {
-                    validEmail = true;
-                }
-            } catch (Exception ex) {
-                ex.getLocalizedMessage();
-            }
-        }
-        while (!validFirstName) {
-            System.out.println("First Name: ");
-            firstName = scanner.nextLine();
-            try {
-                String firstNameRegex = "^[a-zA-Z ,.'-]+$";
-                Pattern pattern = Pattern.compile(firstNameRegex);
-                if (!pattern.matcher(firstName).matches()) {
-                    System.out.println("Error, invalid first name, please try again\n");
-                } else {
-                    validFirstName = true;
-                }
-            } catch (Exception ex) {
-                ex.getLocalizedMessage();
-            }
-        }
-        while (!validLastName) {
-            System.out.println("Last Name: ");
-            lastName = scanner.nextLine();
-            try {
-                String lastNameRegex = "^[a-zA-Z,.'-]+$";
-                Pattern pattern = Pattern.compile(lastNameRegex);
-                if (!pattern.matcher(lastName).matches()) {
-                    System.out.println("Error, invalid last name, please try again\n");
-                } else {
-                    validLastName = true;
+                switch (i) {
+                    case 1:
+                        System.out.println("Enter Email format: name@domain.com");
+                        pattern = Pattern.compile(emailRegex);
+                        if (scanner.hasNextLine()) {
+                            email = scanner.nextLine();
+                            if (!pattern.matcher(email).matches()) {
+                                System.out.println("Error, invalid email, please try again\n");
+                            } else {
+                                i++;
+                            }
+                        }
+                        break;
+                    case 2:
+                        System.out.println("First Name: ");
+                        pattern = Pattern.compile(firstNameRegex);
+                        if (scanner.hasNextLine()) {
+                            firstName = scanner.nextLine();
+                            if (!pattern.matcher(firstName).matches()) {
+                                System.out.println("Error, invalid first name, please try again\n");
+                            } else {
+                                i++;
+                            }
+                        }
+                        break;
+                    case 3:
+                        System.out.println("Last Name: ");
+                        pattern = Pattern.compile(lastNameRegex);
+                        if (scanner.hasNextLine()) {
+                            lastName = scanner.nextLine();
+                            if (!pattern.matcher(lastName).matches()) {
+                                System.out.println("Error, invalid last name, please try again\n");
+                            } else {
+                                validInput = true;
+                            }
+                        }
+                        break;
+                    default:
+                        break;
                 }
             } catch (Exception ex) {
                 ex.getLocalizedMessage();

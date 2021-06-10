@@ -51,7 +51,7 @@ public class Reservation {
 
     @Override
     public String toString() {
-        return "Reservation" + "\n" +
+        return "\nReservation" + "\n" +
                 customer.getFirstName() + " " + customer.getLastName() + "\n" +
                 "Room: " + room.getRoomNumber() + " - " + room.getRoomTypeToString() + "\n" +
                 "Price: $" + room.getRoomPrice() + " price per night" + "\n" +

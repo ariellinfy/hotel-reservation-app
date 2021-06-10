@@ -30,8 +30,8 @@ public class AdminMenu {
         boolean backToMainMenu = false;
         while (!backToMainMenu) {
             adminMenu();
-            int selection = Integer.parseInt(scanner.nextLine());
             try {
+                int selection = Integer.parseInt(scanner.nextLine());
                 switch (selection) {
                     case 1:
                         seeAllCustomers();
@@ -52,27 +52,34 @@ public class AdminMenu {
                         backToMainMenu = true;
                         break;
                     default:
-                        System.out.println("\nError: option not existed, please enter a valid number\n");
+                        System.out.println("\nError: option not existed, please enter a valid number.");
                         break;
                 }
             } catch (Exception ex) {
-                System.out.println("\nError: invalid input\n");
-                System.out.println(ex.getLocalizedMessage());
+                System.out.println("\nError: invalid input.");
             }
         }
     }
 
     public void seeAllCustomers () {
         Collection<Customer> allCustomers = adminResource.getAllCustomers();
-        for (Customer customer : allCustomers) {
-            System.out.println(customer);
+        if (allCustomers.size() > 0) {
+            for (Customer customer : allCustomers) {
+                System.out.println(customer);
+            }
+        } else if (allCustomers.size() == 0) {
+            System.out.println("No customers.");
         }
     }
 
     public void seeAllRooms () {
-        Collection<IRoom> allRooms = adminResource.getAllRooms();
-        for (IRoom room : allRooms) {
-            System.out.println(room);
+        List<Room> allRooms = adminResource.getAllRooms();
+        if (allRooms.size() > 0) {
+            for (Room room : allRooms) {
+                System.out.println(room);
+            }
+        } else if (allRooms.size() == 0) {
+            System.out.println("No rooms.");
         }
     }
 
@@ -100,7 +107,7 @@ public class AdminMenu {
                         if (scanner.hasNextLine()) {
                             roomNumber = scanner.nextLine();
                             if (!pattern.matcher(roomNumber).matches()) {
-                                System.out.println("Error, invalid room number, please try again\n");
+                                System.out.println("Error, invalid room number, please try again.\n");
                             } else {
                                 i++;
                             }
@@ -112,7 +119,7 @@ public class AdminMenu {
                         if (scanner.hasNextLine()) {
                             String priceInput = scanner.nextLine();
                             if (!pattern.matcher(priceInput).matches()) {
-                                System.out.println("Error, invalid price, please try again\n");
+                                System.out.println("Error, invalid price, please try again.\n");
                             } else {
                                 price = Double.parseDouble(priceInput);
                                 i++;
@@ -125,20 +132,20 @@ public class AdminMenu {
                         if (scanner.hasNextLine()) {
                             String roomTypeInput = scanner.nextLine();
                             if (!pattern.matcher(roomTypeInput).matches()) {
-                                System.out.println("Error, invalid room type, please try again\n");
+                                System.out.println("Error, invalid room type, please try again.\n");
                             } else {
                                 if (roomTypeInput.equals("1")) {
                                     roomType = RoomType.SINGLE;
                                 } else if (roomTypeInput.equals("2")) {
                                     roomType = RoomType.DOUBLE;
                                 }
-                                IRoom newRoom;
+                                Room newRoom;
                                 if (price == 0.0) {
                                     newRoom = new FreeRoom(roomNumber, price, roomType);
                                 } else {
                                     newRoom = new Room(roomNumber, price, roomType);
                                 }
-                                List<IRoom> roomsToAdd = new ArrayList<>();
+                                List<Room> roomsToAdd = new ArrayList<>();
                                 roomsToAdd.add(newRoom);
                                 adminResource.addRoom(roomsToAdd);
                                 i++;
@@ -173,16 +180,25 @@ public class AdminMenu {
     public void addTestData () {
         Random randGenerator = new Random();
         double[] priceList = {0.0, 100.0, 120.0, 125.0, 135.0, 145.0, 150.0, 175.0, 200.0, 250.0};
-        List<IRoom> roomsToAdd = new ArrayList<>();
-        String roomNumber;
+        List<Room> roomsToAdd = new ArrayList<>();
+        String roomNumber = "99";
         Double price;
         RoomType roomType;
 
+        List<Room> allRooms = adminResource.getAllRooms();
+        if (allRooms.size() > 0) {
+            for (IRoom room : allRooms) {
+                if (Integer.parseInt(room.getRoomNumber()) > Integer.parseInt(roomNumber)) {
+                    roomNumber = room.getRoomNumber();
+                }
+            }
+        }
+
         for (int i = 0; i < 10; i++) {
-            IRoom newRoom;
+            Room newRoom;
             int randomPrice = randGenerator.nextInt(priceList.length);
             float randomType = randGenerator.nextFloat();
-            roomNumber = "10" + i;
+            roomNumber = String.valueOf(Integer.parseInt(roomNumber) + 1);
             price = priceList[randomPrice];
             if (randomType <= 0.5) {
                 roomType = RoomType.SINGLE;

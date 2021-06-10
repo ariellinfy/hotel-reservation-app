@@ -6,6 +6,12 @@ public class HotelApplication {
 
     public static void main(String[] args) {
         MainMenu mainMenu = new MainMenu();
-        mainMenu.onMainMenu();
+        try {
+            mainMenu.onMainMenu();
+        } catch (Exception ex) {
+            System.out.println(ex.getLocalizedMessage());
+        } finally {
+            scanner.close();
+        }
     }
 }

@@ -1,6 +1,6 @@
 package model;
 
-public class Room implements IRoom {
+public class Room implements IRoom, Comparable<Room> {
     private String roomNumber;
     private Double price;
     private RoomType enumeration;
@@ -74,5 +74,10 @@ public class Room implements IRoom {
     @Override
     public String toString() {
         return "Room Number: " + roomNumber + ", " + roomType + ", Room Price: $" + price;
+    }
+
+    @Override
+    public int compareTo(Room room) {
+        return roomNumber.compareTo(room.getRoomNumber());
     }
 }

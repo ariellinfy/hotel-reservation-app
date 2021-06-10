@@ -3,6 +3,7 @@ package ui;
 import api.HotelResource;
 import model.IRoom;
 import model.Reservation;
+import model.Room;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -31,8 +32,8 @@ public class MainMenu {
         boolean exitProgram = false;
         while (!exitProgram) {
             mainMenu();
-            int selection = Integer.parseInt(scanner.nextLine());
             try {
+                int selection = Integer.parseInt(scanner.nextLine());
                 switch (selection) {
                     case 1:
                         findAndReserveARoom();
@@ -41,7 +42,7 @@ public class MainMenu {
                         seeMyReservation();
                         break;
                     case 3:
-                        createAnAccount();
+                        createAnAccount(1, null);
                         break;
                     case 4:
                         adminMenu.onAdminMenu();
@@ -51,15 +52,13 @@ public class MainMenu {
                         exitProgram = true;
                         break;
                     default:
-                        System.out.println("\nError: option not existed, please enter a valid number\n");
+                        System.out.println("\nError: option not existed, please enter a valid number.");
                         break;
                 }
             } catch (Exception ex) {
-                System.out.println("\nError: invalid input\n");
-                System.out.println(ex.getLocalizedMessage());
+                System.out.println("\nError: invalid input.");
             }
         }
-        scanner.close();
     }
 
     public void findAndReserveARoom () {
@@ -74,7 +73,7 @@ public class MainMenu {
         String email = null;
         String emailRegex = "^(.+)@(.+).(.+)$";
         String roomNumber;
-        String roomNumberRegex = "^\\d+$";
+        String numberRegex = "^\\d+$";
         Pattern pattern;
         while (!backToMainMenu) {
             try {
@@ -85,7 +84,7 @@ public class MainMenu {
                         if (scanner.hasNextLine()) {
                             String checkIn = scanner.nextLine();
                             if (!pattern.matcher(checkIn).matches()) {
-                                System.out.println("Error, invalid date input, please try again\n");
+                                System.out.println("Error, invalid date input, please try again.\n");
                             } else {
                                 String[] subString = checkIn.split("-", 3);
                                 calendar.set(Integer.parseInt(subString[0]), Integer.parseInt(subString[1])-1, Integer.parseInt(subString[2]), 0, 0, 0);
@@ -100,20 +99,55 @@ public class MainMenu {
                         if (scanner.hasNextLine()) {
                             String checkOut = scanner.nextLine();
                             if (!pattern.matcher(checkOut).matches()) {
-                                System.out.println("Error, invalid date input, please try again\n");
+                                System.out.println("Error, invalid date input, please try again.\n");
                             } else {
                                 String[] subString = checkOut.split("-", 3);
                                 calendar.set(Integer.parseInt(subString[0]), Integer.parseInt(subString[1])-1, Integer.parseInt(subString[2]), 0, 0, 0);
                                 checkOutDate = calendar.getTime();
-                                Collection<IRoom> availableRooms = hotelResource.findARoom(checkInDate, checkOutDate);
-                                for (IRoom room : availableRooms) {
-                                    System.out.println(room);
+                                if (checkOutDate.getTime() <= checkInDate.getTime()) {
+                                    System.out.println("Error, CheckOut date must be greater than CheckIn date, please try again.\n");
+                                } else {
+                                    List<Room> availableRooms = hotelResource.findARoom(checkInDate, checkOutDate);
+                                    if (availableRooms.size() > 0) {
+                                        for (IRoom room : availableRooms) {
+                                            System.out.println(room);
+                                        }
+                                        i = 4;
+                                    } else {
+                                        i = 3;
+                                    }
                                 }
-                                i++;
                             }
                         }
                         break;
                     case 3:
+                        System.out.println("Rooms aren't available for your preferred dates, we would now search the recommended rooms on alternatives date.");
+                        System.out.println("Tell us how many days out the room recommendation should search? Example enter 7 for adding 7 days to your checkin and chechout dates.");
+                        pattern = Pattern.compile(numberRegex);
+                        if (scanner.hasNextLine()) {
+                            String addition = scanner.nextLine();
+                            if (!pattern.matcher(addition).matches()) {
+                                System.out.println("Error, invalid input, please try again.\n");
+                            } else {
+                                calendar.setTime(checkInDate);
+                                calendar.add(Calendar.DAY_OF_MONTH, Integer.parseInt(addition));
+                                checkInDate = calendar.getTime();
+                                calendar.setTime(checkOutDate);
+                                calendar.add(Calendar.DAY_OF_MONTH, Integer.parseInt(addition));
+                                checkOutDate = calendar.getTime();
+                                List<Room> availableRooms = hotelResource.findARoom(checkInDate, checkOutDate);
+                                if (availableRooms.size() > 0) {
+                                    for (IRoom room : availableRooms) {
+                                        System.out.println(room);
+                                    }
+                                    i++;
+                                } else {
+                                    System.out.println("Sorry, no rooms are available at this time, please try different set of dates or come back another time as there may have more rooms opened for booking, thank you for your interest and hope to see you back.");
+                                    backToMainMenu = true;
+                                }
+                            }
+                        }
+                    case 4:
                         System.out.println("Would you like to book a room? y/n");
                         pattern = Pattern.compile(confirmRegex);
                         if (scanner.hasNextLine()) {
@@ -129,7 +163,7 @@ public class MainMenu {
                             }
                         }
                         break;
-                    case 4:
+                    case 5:
                         System.out.println("Do you have an account with us? y/n");
                         pattern = Pattern.compile(confirmRegex);
                         if (scanner.hasNextLine()) {
@@ -138,14 +172,19 @@ public class MainMenu {
                                 System.out.println("Please enter Y (Yes) or N (No)\n");
                             } else {
                                 if (confirmation.equals("n")) {
-                                    email = createAnAccount();
+                                    email = createAnAccount(1, null);
                                 } else {
                                     System.out.println("Enter Email format: name@domain.com");
                                     pattern = Pattern.compile(emailRegex);
                                     if (scanner.hasNextLine()) {
                                         email = scanner.nextLine();
                                         if (!pattern.matcher(email).matches()) {
-                                            System.out.println("Error, invalid email, please try again\n");
+                                            System.out.println("Error, invalid email, please try again.\n");
+                                        } else {
+                                            if (hotelResource.getCustomer(email) == null) {
+                                                System.out.println("Error, account not existed, let's create an account.\n");
+                                                createAnAccount(2, email);
+                                            }
                                         }
                                     }
                                 }
@@ -153,22 +192,25 @@ public class MainMenu {
                             }
                         }
                         break;
-                    case 5:
+                    case 6:
                         System.out.println("What room number would you like to reserve?");
-                        pattern = Pattern.compile(roomNumberRegex);
+                        pattern = Pattern.compile(numberRegex);
                         if (scanner.hasNextLine()) {
                             roomNumber = scanner.nextLine();
                             if (!pattern.matcher(roomNumber).matches()) {
-                                System.out.println("Error, invalid input, please try again\n");
+                                System.out.println("Error, invalid input, please try again.\n");
                             } else {
                                 IRoom room = hotelResource.getRoom(roomNumber);
-                                System.out.println(room);
                                 if (room == null) {
-                                    System.out.println("This room is not available, please try a different room\n");
+                                    System.out.println("This room is not available, please try a different room.\n");
                                 } else {
                                     Reservation newReservation = hotelResource.bookARoom(email, room, checkInDate, checkOutDate);
-                                    System.out.println(newReservation);
-                                    backToMainMenu = true;
+                                    if (newReservation == null) {
+                                        System.out.println("This room is not available, please try a different room.\n");
+                                    } else {
+                                        System.out.println(newReservation);
+                                        backToMainMenu = true;
+                                    }
                                 }
                             }
                         }
@@ -183,26 +225,36 @@ public class MainMenu {
     }
 
     public void seeMyReservation () {
-        System.out.println("Enter Email format: name@domain.com");
+        boolean backToMainMenu = false;
         String emailRegex = "^(.+)@(.+).(.+)$";
         Pattern pattern = Pattern.compile(emailRegex);
-        if (scanner.hasNextLine()) {
-            String email = scanner.nextLine();
-            if (!pattern.matcher(email).matches()) {
-                System.out.println("Error, invalid email, please try again\n");
-            } else {
-                Collection<Reservation> myReservations = hotelResource.getCustomerReservations(email);
-                for (Reservation reservation : myReservations) {
-                    System.out.println(reservation);
+        while (!backToMainMenu) {
+            System.out.println("Enter Email format: name@domain.com");
+            if (scanner.hasNextLine()) {
+                String email = scanner.nextLine();
+                if (!pattern.matcher(email).matches()) {
+                    System.out.println("Error, invalid email, please try again.\n");
+                } else {
+                    if (hotelResource.getCustomer(email) == null) {
+                        System.out.println("Error, account not existed, please create an account to use the booking service.");
+                    } else {
+                        Collection<Reservation> myReservations = hotelResource.getCustomerReservations(email);
+                        if (myReservations.size() > 0) {
+                            for (Reservation reservation : myReservations) {
+                                System.out.println(reservation);
+                            }
+                        } else if (myReservations.size() == 0) {
+                            System.out.println("No reservations.");
+                        }
+                    }
+                    backToMainMenu = true;
                 }
             }
         }
     }
 
-    public String createAnAccount () {
+    public String createAnAccount (int i, String email) {
         boolean validInput = false;
-        int i = 1;
-        String email = null;
         String emailRegex = "^(.+)@(.+).(.+)$";
         String firstName = null;
         String firstNameRegex = "^[a-zA-Z ,.'-]+$";
@@ -218,7 +270,7 @@ public class MainMenu {
                         if (scanner.hasNextLine()) {
                             email = scanner.nextLine();
                             if (!pattern.matcher(email).matches()) {
-                                System.out.println("Error, invalid email, please try again\n");
+                                System.out.println("Error, invalid email, please try again.\n");
                             } else {
                                 i++;
                             }
@@ -230,7 +282,7 @@ public class MainMenu {
                         if (scanner.hasNextLine()) {
                             firstName = scanner.nextLine();
                             if (!pattern.matcher(firstName).matches()) {
-                                System.out.println("Error, invalid first name, please try again\n");
+                                System.out.println("Error, invalid first name, please try again.\n");
                             } else {
                                 i++;
                             }
@@ -242,7 +294,7 @@ public class MainMenu {
                         if (scanner.hasNextLine()) {
                             lastName = scanner.nextLine();
                             if (!pattern.matcher(lastName).matches()) {
-                                System.out.println("Error, invalid last name, please try again\n");
+                                System.out.println("Error, invalid last name, please try again.\n");
                             } else {
                                 validInput = true;
                             }

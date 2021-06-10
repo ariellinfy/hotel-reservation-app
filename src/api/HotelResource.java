@@ -3,17 +3,19 @@ package api;
 import model.Customer;
 import model.IRoom;
 import model.Reservation;
+import model.Room;
 import service.CustomerService;
 import service.ReservationService;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 public class HotelResource {
     CustomerService customerService = CustomerService.getInstance();
     ReservationService reservationService = ReservationService.getInstance();
 
-    public Collection<IRoom> findARoom (Date checkIn, Date checkOut) {
+    public List<Room> findARoom (Date checkIn, Date checkOut) {
         return reservationService.findRooms(checkIn, checkOut);
     }
 

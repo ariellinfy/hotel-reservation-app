@@ -1,7 +1,7 @@
 package api;
 
 import model.Customer;
-import model.IRoom;
+import model.Room;
 import service.CustomerService;
 import service.ReservationService;
 
@@ -16,8 +16,8 @@ public class AdminResource {
         return customerService.getCustomer(email);
     }
 
-    public void addRoom (List<IRoom> rooms) {
-        for (IRoom room : rooms) {
+    public void addRoom (List<Room> rooms) {
+        for (Room room : rooms) {
             reservationService.addRoom(room);
         }
     }
@@ -26,7 +26,7 @@ public class AdminResource {
         return customerService.getAllCustomers();
     }
 
-    public Collection<IRoom> getAllRooms () {
+    public List<Room> getAllRooms () {
         return reservationService.getAllRooms();
     }
 

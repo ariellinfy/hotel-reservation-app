@@ -3,6 +3,7 @@ package service;
 import model.Customer;
 import model.IRoom;
 import model.Reservation;
+import model.Room;
 
 import java.util.*;
 
@@ -10,7 +11,7 @@ public class ReservationService {
 
     private static ReservationService reservationService = null;
 
-    private Map<String, IRoom> roomList;
+    private Map<String, Room> roomList;
     private Set<Reservation> reservationList;
 
     private ReservationService () {
@@ -25,24 +26,31 @@ public class ReservationService {
         return reservationService;
     }
 
-    public void addRoom (IRoom room) {
+    public void addRoom (Room room) {
         roomList.put(room.getRoomNumber(), room);
     }
 
-    public Collection<IRoom> findRooms (Date checkInDate, Date checkOutDate) {
-        List<String> bookedRoomNumbers = new ArrayList<>();
-        List<IRoom> availableRooms = new ArrayList<>();
+    private boolean checkDateRange (Reservation reservation, Date checkInDate, Date checkOutDate) {
+        return reservation.getCheckInDate().getTime() <= checkInDate.getTime() && checkInDate.getTime() <= reservation.getCheckOutDate().getTime() ||
+                reservation.getCheckInDate().getTime() <= checkOutDate.getTime() && checkOutDate.getTime() <= reservation.getCheckOutDate().getTime() ||
+                checkInDate.getTime() <= reservation.getCheckInDate().getTime() && reservation.getCheckInDate().getTime() <= checkOutDate.getTime() ||
+                checkInDate.getTime() <= reservation.getCheckOutDate().getTime() && reservation.getCheckOutDate().getTime() <= checkOutDate.getTime();
+    }
 
+    public List<Room> findRooms (Date checkInDate, Date checkOutDate) {
+        List<String> bookedRoomNumbers = new ArrayList<>();
+        List<Room> availableRooms = new ArrayList<>();
         for (Reservation reservation : reservationList) {
-            if (reservation.getCheckInDate().compareTo(checkInDate) >= 0 && reservation.getCheckOutDate().compareTo(checkOutDate) <= 0) {
+            if (checkDateRange(reservation, checkInDate, checkOutDate)) {
                 bookedRoomNumbers.add(reservation.getRoom().getRoomNumber());
             }
         }
-        for (IRoom room : roomList.values()) {
+        for (Room room : roomList.values()) {
             if (!bookedRoomNumbers.contains(room.getRoomNumber())) {
                 availableRooms.add(room);
             }
         }
+        Collections.sort(availableRooms);
         return availableRooms;
     }
 
@@ -51,14 +59,19 @@ public class ReservationService {
     }
 
     public Reservation reserveARoom (Customer customer, IRoom room, Date checkInDate, Date checkOutDate) {
-        Reservation newReservation = new Reservation(customer, room, checkInDate, checkOutDate);
-        reservationList.add(newReservation);
-        return newReservation;
+        List<Room> availableRooms = findRooms(checkInDate, checkOutDate);
+        if (availableRooms.size() > 0) {
+            if (availableRooms.contains(room)) {
+                Reservation newReservation = new Reservation(customer, room, checkInDate, checkOutDate);
+                reservationList.add(newReservation);
+                return newReservation;
+            }
+        }
+        return null;
     }
 
     public Collection<Reservation> getCustomerReservations (Customer customer) {
         List<Reservation> customerReservations = new ArrayList<>();
-
         for (Reservation reservation : reservationList) {
             if (reservation.getCustomer().equals(customer)) {
                 customerReservations.add(reservation);
@@ -67,13 +80,23 @@ public class ReservationService {
         return customerReservations;
     }
 
-    public Collection<IRoom> getAllRooms () {
-        return roomList.values();
+    public List<Room> getAllRooms () {
+        List<Room> allRooms = new ArrayList<>();
+        for (Room room : roomList.values()) {
+            allRooms.add(room);
+        }
+        Collections.sort(allRooms);
+        return allRooms;
     }
 
     public void printAllReservation () {
-        for (Reservation reservation : reservationList) {
-            System.out.println(reservation + "\n");
+        if (reservationList.size() > 0) {
+            for (Reservation reservation : reservationList) {
+                System.out.println(reservation);
+            }
+        } else if (reservationList.size() == 0) {
+            System.out.println("No reservations.");
         }
+
     }
 }

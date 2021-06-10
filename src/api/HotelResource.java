@@ -1,9 +1,6 @@
 package api;
 
-import model.Customer;
-import model.IRoom;
-import model.Reservation;
-import model.Room;
+import model.*;
 import service.CustomerService;
 import service.ReservationService;
 
@@ -17,6 +14,10 @@ public class HotelResource {
 
     public List<Room> findARoom (Date checkIn, Date checkOut) {
         return reservationService.findRooms(checkIn, checkOut);
+    }
+
+    public List<Room> freeOrPaidRooms (Date checkIn, Date checkOut, RoomPrice priceType) {
+        return reservationService.freeOrPaidRooms(checkIn, checkOut, priceType);
     }
 
     public Customer getCustomer (String email) {

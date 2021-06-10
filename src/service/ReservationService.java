@@ -1,9 +1,6 @@
 package service;
 
-import model.Customer;
-import model.IRoom;
-import model.Reservation;
-import model.Room;
+import model.*;
 
 import java.util.*;
 
@@ -52,6 +49,25 @@ public class ReservationService {
         }
         Collections.sort(availableRooms);
         return availableRooms;
+    }
+
+    public List<Room> freeOrPaidRooms (Date checkInDate, Date checkOutDate, RoomPrice priceType) {
+        List<Room> allAvailableRooms = findRooms(checkInDate, checkOutDate);
+        List<Room> chosenRooms = new ArrayList<>();
+        for (Room room : allAvailableRooms) {
+            if (priceType == RoomPrice.FREE) {
+                if (room.getRoomPrice() == 0.0) {
+                    chosenRooms.add(room);
+                }
+            } else if (priceType == RoomPrice.PAID) {
+                if (room.getRoomPrice() > 0.0) {
+                    chosenRooms.add(room);
+                }
+            } else if (priceType == RoomPrice.BOTH) {
+                chosenRooms = allAvailableRooms;
+            }
+        }
+        return chosenRooms;
     }
 
     public IRoom getARoom (String roomId) {

@@ -1,9 +1,7 @@
 package ui;
 
 import api.HotelResource;
-import model.IRoom;
-import model.Reservation;
-import model.Room;
+import model.*;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -74,6 +72,8 @@ public class MainMenu {
         String emailRegex = "^(.+)@(.+).(.+)$";
         String roomNumber;
         String numberRegex = "^\\d+$";
+        RoomPrice priceType = null;
+        String priceTypeRegex = "^[f|p|a]$";
         Pattern pattern;
         while (!backToMainMenu) {
             try {
@@ -107,20 +107,39 @@ public class MainMenu {
                                 if (checkOutDate.getTime() <= checkInDate.getTime()) {
                                     System.out.println("Error, CheckOut date must be greater than CheckIn date, please try again.\n");
                                 } else {
-                                    List<Room> availableRooms = hotelResource.findARoom(checkInDate, checkOutDate);
-                                    if (availableRooms.size() > 0) {
-                                        for (IRoom room : availableRooms) {
-                                            System.out.println(room);
-                                        }
-                                        i = 4;
-                                    } else {
-                                        i = 3;
-                                    }
+                                    i++;
                                 }
                             }
                         }
                         break;
                     case 3:
+                        System.out.println("Looking for free or paid rooms? Enter price type to advance search: F for free rooms, P for paid rooms, A for all rooms");
+                        pattern = Pattern.compile(priceTypeRegex);
+                        if (scanner.hasNextLine()) {
+                            String option = scanner.nextLine().toLowerCase();
+                            if (!pattern.matcher(option).matches()) {
+                                System.out.println("Error, invalid input, please try again.\n");
+                            } else {
+                                if (option.equals("f")) {
+                                    priceType = RoomPrice.FREE;
+                                } else if (option.equals("p")) {
+                                    priceType = RoomPrice.PAID;
+                                } else if (option.equals("a")) {
+                                    priceType = RoomPrice.BOTH;
+                                }
+                                List<Room> availableRooms = hotelResource.freeOrPaidRooms(checkInDate, checkOutDate, priceType);
+                                if (availableRooms.size() > 0) {
+                                    for (IRoom room : availableRooms) {
+                                        System.out.println(room);
+                                    }
+                                    i = 5;
+                                } else {
+                                    i = 4;
+                                }
+                            }
+                        }
+                        break;
+                    case 4:
                         System.out.println("Rooms aren't available for your preferred dates, we would now search the recommended rooms on alternatives date.");
                         System.out.println("Tell us how many days out the room recommendation should search? Example enter 7 for adding 7 days to your checkin and chechout dates.");
                         pattern = Pattern.compile(numberRegex);
@@ -135,7 +154,7 @@ public class MainMenu {
                                 calendar.setTime(checkOutDate);
                                 calendar.add(Calendar.DAY_OF_MONTH, Integer.parseInt(addition));
                                 checkOutDate = calendar.getTime();
-                                List<Room> availableRooms = hotelResource.findARoom(checkInDate, checkOutDate);
+                                List<Room> availableRooms = hotelResource.freeOrPaidRooms(checkInDate, checkOutDate, priceType);
                                 if (availableRooms.size() > 0) {
                                     for (IRoom room : availableRooms) {
                                         System.out.println(room);
@@ -147,7 +166,8 @@ public class MainMenu {
                                 }
                             }
                         }
-                    case 4:
+                        break;
+                    case 5:
                         System.out.println("Would you like to book a room? y/n");
                         pattern = Pattern.compile(confirmRegex);
                         if (scanner.hasNextLine()) {
@@ -163,7 +183,7 @@ public class MainMenu {
                             }
                         }
                         break;
-                    case 5:
+                    case 6:
                         System.out.println("Do you have an account with us? y/n");
                         pattern = Pattern.compile(confirmRegex);
                         if (scanner.hasNextLine()) {
@@ -192,7 +212,7 @@ public class MainMenu {
                             }
                         }
                         break;
-                    case 6:
+                    case 7:
                         System.out.println("What room number would you like to reserve?");
                         pattern = Pattern.compile(numberRegex);
                         if (scanner.hasNextLine()) {

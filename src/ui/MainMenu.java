@@ -113,7 +113,7 @@ public class MainMenu {
                         }
                         break;
                     case 3:
-                        System.out.println("Looking for free or paid rooms? Enter price type to advance search: F for free rooms, P for paid rooms, A for all rooms");
+                        System.out.println("Filter room price by entering: F for free rooms, P for paid rooms, A for all rooms");
                         pattern = Pattern.compile(priceTypeRegex);
                         if (scanner.hasNextLine()) {
                             String option = scanner.nextLine().toLowerCase();
@@ -168,7 +168,7 @@ public class MainMenu {
                         }
                         break;
                     case 5:
-                        System.out.println("Would you like to book a room? y/n");
+                        System.out.println("\nWould you like to book a room? y/n");
                         pattern = Pattern.compile(confirmRegex);
                         if (scanner.hasNextLine()) {
                             confirmation = scanner.nextLine().toLowerCase();
@@ -328,7 +328,7 @@ public class MainMenu {
             }
         }
         hotelResource.createACustomer(email, firstName, lastName);
-        System.out.println("\nNew account has been created: ");
+        System.out.println("\nYour account: ");
         System.out.println(hotelResource.getCustomer(email) + "\n");
         return email;
     }
